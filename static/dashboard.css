@@ -2,6 +2,7 @@ body {
     background-color: #092E20;
     color: #eee;
     font-family: "Helvetica Neue", Helvetica, sans-serif;
+    text-align: center;
 }
 
 h1 { 
@@ -14,11 +15,11 @@ h1 {
 
 div.metric {
     width: 250px;
-    float: left;
     border: 1px #92CC47 solid;
     margin: 15px;
     border-radius: 8px;
     background-color: #234F32;
+    display: inline-block;
 }
 
 div.metric h2 {
