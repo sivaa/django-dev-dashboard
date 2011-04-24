@@ -9,7 +9,7 @@ class Command(NoArgsCommand):
         verbose = options.get('verbosity', 0)
         for metric in TracTicketMetric.objects.all():
             if verbose:
-                if verbose:
-                    print("Updating %s ... " % metric.name.lower(), end="")
-                datum = metric.data.create(measurement=metric.fetch())
+                print("Updating %s ... " % metric.name.lower(), end="")
+            datum = metric.data.create(measurement=metric.fetch())
+            if verbose:
                 print(datum.measurement)
