@@ -3,3 +3,4 @@ epio
 Unipath
 -e git+https://github.com/sebleier/django-redis-cache.git#egg=django_redis_cache
 psycopg2
+South
