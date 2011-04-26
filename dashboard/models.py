@@ -11,6 +11,7 @@ class TracTicketMetric(models.Model):
     slug = models.SlugField()
     query = models.TextField()
     data = GenericRelation('Datum')
+    show_on_dashboard = models.BooleanField(default=True)
     
     def __unicode__(self):
         return self.name
