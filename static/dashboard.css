@@ -60,6 +60,15 @@ div.metric.has-sparkline p.value {
     width: 140px;
 }
 
+div.metric span.timestamp {
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    display: block;
+    font-weight: 400;
+    font-size: 11px;
+    margin: -12px 0 8px 0;
+    padding: 0;
+}
+
 p.updated {
     clear: both;
     font-weight: 400;
