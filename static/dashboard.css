@@ -5,7 +5,7 @@ body {
     text-align: center;
 }
 
-h1 { 
+h1 {
     text-align: center;
     font-family: "HelveticaNeue-CondensedBold", "Helvetica Neue Condensed Bold", "Impact", Helvetica, sans-serif;
     font-weight: bold;
@@ -20,6 +20,7 @@ div.metric {
     border-radius: 8px;
     background-color: #234F32;
     display: inline-block;
+    position:relative;
 }
 
 div.metric h2 {
@@ -39,12 +40,22 @@ div.metric a {
     text-decoration: none;
 }
 
+div.sparkline{
+   position:absolute;
+   left:145px;
+   top:0px;
+   width: 95px;
+
+}
+
 div.metric p.value {
     font-family: "HelveticaNeue-CondensedBlack", "Helvetica Neue Condensed Black", "Impact", Helvetica, sans-serif;
     text-align: center;
     font-size: 80px;
     margin: 0;
     padding: 0;
+    width:140px;
+
 }
 
 p.updated {
@@ -56,3 +67,4 @@ p.updated {
     padding: 0;
     opacity: 0.5;
 }
+
