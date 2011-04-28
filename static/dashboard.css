@@ -16,7 +16,7 @@ h1 {
 div.metric {
     width: 250px;
     border: 1px #92CC47 solid;
-    margin: 15px;
+    margin: 11px;
     border-radius: 8px;
     background-color: #234F32;
     display: inline-block;
@@ -53,9 +53,11 @@ div.metric p.value {
     text-align: center;
     font-size: 80px;
     margin: 0;
-    padding: 0;
-    width:140px;
+    padding: 0 12px;
+}
 
+div.metric.has-sparkline p.value {
+    width: 140px;
 }
 
 p.updated {

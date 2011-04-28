@@ -26,13 +26,14 @@
         var nLines = sparklinesData.length;
         for (i=0;i<nLines;i++)
         {
-            var lineData = sparklinesData[i].values;
-            var lineStamps = sparklinesData[i].timestamps;
-            var x= [];
-            var r = Raphael("spark"+(i+1));
-
-            var line = r.g.linechart(0, 30, 95, 90, lineStamps, [lineData]);
-            line.attr({stroke:'yellow'});;
+            if ($("#spark"+i).length > 0) {
+                var lineData = sparklinesData[i].values;
+                var lineStamps = sparklinesData[i].timestamps;
+                var x= [];
+                var r = Raphael("spark"+i);
+                var line = r.g.linechart(0, 30, 95, 90, lineStamps, [lineData]);
+                line.attr({stroke:'yellow'});;
+            }
         }
     });
 </script>
@@ -40,13 +41,14 @@
 <body>
   <h1>Django Development Dashboard</h1>
   {% for report in data %}
-    <div class="metric">
+    <div class="metric{% if report.metric.show_sparkline %} has-sparkline{% endif %}">
       <h2><a href="{{ report.latest.metric.link }}">{{ report.latest.metric.name }}</a></h2>
       <p class="value" ><a href="{{ report.latest.metric.link }}">{{ report.latest.measurement }}</a></p>
-      <div class="sparkline" id="spark{{forloop.counter}}"
-           title="from {{report.first_stamp|date:'SHORT_DATETIME_FORMAT'}} to {{report.last_stamp|date:'SHORT_DATETIME_FORMAT'}}">
-
-      </div>
+        {% if report.metric.show_sparkline %}
+          <div class="sparkline" id="spark{{forloop.counter0}}"
+               title="from {{report.first_stamp|date:'SHORT_DATETIME_FORMAT'}} to {{report.last_stamp|date:'SHORT_DATETIME_FORMAT'}}">
+          </div>
+        {% endif %}
     </div>
   {% endfor %}
   <p class="updated">Updated {{ data.0.latest.timestamp|timesince }} ago. Hover over sparklines to see their time range.</p>

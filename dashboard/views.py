@@ -20,6 +20,7 @@ def index(request):
             for datum in data_list
         ]
         data.append({
+            'metric': metric,
             'latest': latest,
             'thirty_days_values': simplejson.dumps(thirty_days_values),
             'thirty_days_timestamps': simplejson.dumps(thirty_days_timestamps),

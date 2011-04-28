@@ -4,7 +4,8 @@ from django.contrib import admin
 from .models import TracTicketMetric, Datum
 
 admin.site.register(TracTicketMetric, 
-    list_display = ('name', 'query'),
+    list_display = ('name', 'query', 'show_on_dashboard', 'show_sparkline'),
+    list_editable = ('show_on_dashboard', 'show_sparkline'),
     prepopulated_fields = {'slug': ['name']},
 )
 

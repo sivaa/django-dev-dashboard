@@ -12,6 +12,7 @@ class TracTicketMetric(models.Model):
     query = models.TextField()
     data = GenericRelation('Datum')
     show_on_dashboard = models.BooleanField(default=True)
+    show_sparkline = models.BooleanField(default=True)
     
     def __unicode__(self):
         return self.name
