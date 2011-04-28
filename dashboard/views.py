@@ -14,7 +14,7 @@ def index(request):
     metrics = TracTicketMetric.objects.filter(show_on_dashboard=True).order_by('name')
     for metric in metrics:
         latest = metric.data.select_related('metric').latest()
-        data.append({'metric': metric, 'latest': latest})
+        data.append({'metric': metric, 'latest': latest,})
     return render(request, 'dashboard/index.html', {'data': data})
 
 @cache_page(60 * 10)
@@ -23,17 +23,8 @@ def metric_json(request, metric_id):
     
     one_month_ago = datetime.datetime.now() - datetime.timedelta(days=30)
     data = metric.data.filter(timestamp__gt=one_month_ago).order_by('timestamp')
-    
-    values = []
-    timestamps = []
-    for i in data:
-        values.append(i.measurement)
-        timestamps.append(time.mktime(i.timestamp.timetuple()))
-    
+    data = [(time.mktime(i.timestamp.timetuple()), i.measurement) for i in data]    
     return http.HttpResponse(
-        simplejson.dumps(
-            {'values': values, 'timestamps': timestamps},
-            indent = 2 if settings.DEBUG else None
-        ),
+        simplejson.dumps(data, indent = 2 if settings.DEBUG else None),
         content_type = "application/json",
     )
