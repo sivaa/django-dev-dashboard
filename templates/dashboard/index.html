@@ -13,7 +13,7 @@
         <span class="timestamp">&nbsp;</span>
       </p>
       {% if report.metric.show_sparkline %}
-        <div class="sparkline" id="spark{{ forloop.counter0 }}" data-metric="{{ report.metric.id }}"></div>
+        <div class="sparkline" id="spark{{ forloop.counter0 }}" data-metric="{{ report.metric.slug }}"></div>
       {% endif %}
     </div>
   {% endfor %}

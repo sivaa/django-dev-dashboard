@@ -17,16 +17,16 @@ def index(request):
         data.append({'metric': metric, 'latest': latest,})
     return render(request, 'dashboard/index.html', {'data': data})
 
-def metric_detail(request, metric_id):
-    metric = get_object_or_404(TracTicketMetric, pk=metric_id)
+def metric_detail(request, metric_slug):
+    metric = get_object_or_404(TracTicketMetric, slug=metric_slug)
     return render(request, 'dashboard/detail.html', {
         'metric': metric,
         'latest': metric.data.latest(),
     })
 
 @cache_page(60 * 10)
-def metric_json(request, metric_id):
-    metric = get_object_or_404(TracTicketMetric, pk=metric_id)
+def metric_json(request, metric_slug):
+    metric = get_object_or_404(TracTicketMetric, slug=metric_slug)
     
     try:
         daysback = int(request.GET['days'])
