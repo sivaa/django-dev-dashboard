@@ -6,7 +6,7 @@ from ...models import TracTicketMetric
 class Command(NoArgsCommand):
     
     def handle_noargs(self, **options):
-        verbose = options.get('verbosity', 0)
+        verbose = int(options.get('verbosity', 0))
         for metric in TracTicketMetric.objects.all():
             if verbose:
                 print("Updating %s ... " % metric.name.lower(), end="")
