@@ -6,13 +6,25 @@ from django.contrib.contenttypes.generic import GenericForeignKey, GenericRelati
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
-class TracTicketMetric(models.Model):
+class Metric(models.Model):
     name = models.CharField(max_length=300)
     slug = models.SlugField()
-    query = models.TextField()
     data = GenericRelation('Datum')
     show_on_dashboard = models.BooleanField(default=True)
     show_sparkline = models.BooleanField(default=True)
+
+    class Meta:
+        abstract = True
+        
+    def __unicode__(self):
+        return self.name
+        
+    @models.permalink
+    def get_absolute_url(self):
+        return ("metric-detail", [self.pk])
+
+class TracTicketMetric(Metric):
+    query = models.TextField()
     
     def __unicode__(self):
         return self.name
