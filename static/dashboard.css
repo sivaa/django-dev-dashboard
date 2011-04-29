@@ -85,3 +85,11 @@ p.updated {
     margin: 0 auto;
 }
 
+#hover {
+    position: absolute;
+    display: none;
+    padding: 4px 10px;
+    font-size: 16px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+}

@@ -17,4 +17,33 @@ $(function () {
         }
         $.plot(e, [data], options);
     });
+
+    hover = {
+        show: function(x, y, message) {
+            $('<div id="hover">').html(message)
+                .css({top: y+15, left: x+5})
+                .appendTo('body')
+                .show();
+        },
+        hide: function() {
+            $("#hover").remove();
+        }
+    };
+    
+    var previousPoint = null;
+    e.bind("plothover", function(event, pos, item) {
+        if (item) {
+            if (previousPoint != item.dataIndex) {
+                previousPoint = item.dataIndex;
+                hover.hide();
+                var d = new Date(item.datapoint[0]);
+                var ds = $.plot.formatDate(d, "%b %d, %h:%M%p")
+                var m = ds + "<br>" + item.datapoint[1] + " tickets";
+                hover.show(item.pageX, item.pageY, m)
+            }
+        } else {
+            hover.hide();
+            previousPoint = null;
+        }
+    });
 });
