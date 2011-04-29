@@ -1,6 +1,7 @@
 import datetime
 import urllib
 import xmlrpclib
+import feedparser
 from django.conf import settings
 from django.contrib.contenttypes.generic import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -35,7 +36,17 @@ class TracTicketMetric(Metric):
     
     def link(self):
         return "%squery?%s" % (settings.TRAC_URL, self.query)
+
+class RSSFeedMetric(Metric):
+    feed_url = models.URLField(max_length=1000)
+    link_url = models.URLField(max_length=1000)
     
+    def fetch(self):
+        return len(feedparser.parse(self.feed_url).entries)
+    
+    def link(self):
+        return self.link_url
+
 class Datum(models.Model):
     metric = GenericForeignKey()
     content_type = models.ForeignKey(ContentType, related_name='+')
