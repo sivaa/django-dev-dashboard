@@ -90,6 +90,6 @@ p.updated {
     display: none;
     padding: 4px 10px;
     font-size: 16px;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.7);
     border-radius: 12px;
 }
