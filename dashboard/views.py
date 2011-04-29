@@ -21,9 +21,16 @@ def index(request):
 def metric_json(request, metric_id):
     metric = get_object_or_404(TracTicketMetric, pk=metric_id)
     
-    one_month_ago = datetime.datetime.now() - datetime.timedelta(days=30)
-    data = metric.data.filter(timestamp__gt=one_month_ago).order_by('timestamp')
-    data = [(time.mktime(i.timestamp.timetuple()), i.measurement) for i in data]    
+    try:
+        daysback = int(request.GET['days'])
+    except (TypeError, KeyError):
+        daysback = 30    
+    d = datetime.datetime.now() - datetime.timedelta(days=daysback)
+    
+    data = metric.data.filter(timestamp__gt=d) \
+                      .order_by('timestamp') \
+                      .values_list('timestamp', 'measurement')
+    data = [(time.mktime(t.timetuple()), m) for (t, m) in data]    
     return http.HttpResponse(
         simplejson.dumps(data, indent = 2 if settings.DEBUG else None),
         content_type = "application/json",
