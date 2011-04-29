@@ -7,9 +7,9 @@
 {% block content %}
   {% for report in data %}
     <div class="metric{% if report.metric.show_sparkline %} has-sparkline{% endif %}">
-      <h2><a href="{{ report.latest.metric.link }}">{{ report.latest.metric.name }}</a></h2>
+      <h2><a href="{{ report.metric.link }}">{{ report.metric.name }}</a></h2>
       <p class="value" >
-        <a href="{{ report.latest.metric.link }}">{{ report.latest.measurement }}</a>
+        <a href="{{ metric.link }}">{{ report.latest.measurement }}</a>
         <span class="timestamp">&nbsp;</span>
       </p>
       {% if report.metric.show_sparkline %}
