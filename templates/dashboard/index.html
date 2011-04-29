@@ -1,5 +1,9 @@
 {% extends "dashboard/base.html" %}
 
+{% block extrahead %}
+  <script type="text/javascript" src="{{ STATIC_URL }}dashboard.js" charset="utf-8"></script>
+{% endblock %}
+
 {% block content %}
   {% for report in data %}
     <div class="metric{% if report.metric.show_sparkline %} has-sparkline{% endif %}">

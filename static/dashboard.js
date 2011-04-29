@@ -30,5 +30,9 @@ $(function () {
                 }
             });
         });
+        
+        e.click(function() {
+            window.location = "/metric/" + e.data('metric') + '/';
+        })
     });
 });
