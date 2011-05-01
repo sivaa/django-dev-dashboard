@@ -7,12 +7,21 @@ from django.contrib.contenttypes.generic import GenericForeignKey, GenericRelati
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
+METRIC_PERIOD_INSTANT = 'instant'
+METRIC_PERIOD_DAILY = 'daily'
+METRIC_PERIOD_CHOICES = (
+    (METRIC_PERIOD_INSTANT, 'Instant'),
+    (METRIC_PERIOD_DAILY, 'Daily'),
+)
+
 class Metric(models.Model):
     name = models.CharField(max_length=300)
     slug = models.SlugField()
     data = GenericRelation('Datum')
     show_on_dashboard = models.BooleanField(default=True)
     show_sparkline = models.BooleanField(default=True)
+    period = models.CharField(max_length=15, choices=METRIC_PERIOD_CHOICES, 
+                              default=METRIC_PERIOD_INSTANT)
 
     class Meta:
         abstract = True
