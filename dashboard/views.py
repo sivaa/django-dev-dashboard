@@ -1,10 +1,10 @@
 from __future__ import absolute_import
+import calendar
 import datetime
 import operator
-import time
 from django import http
 from django.conf import settings
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.views.decorators.cache import cache_page
 from django.utils import simplejson
 from .models import Metric
@@ -42,7 +42,7 @@ def metric_json(request, metric_slug):
     data = metric.data.filter(timestamp__gt=d) \
                       .order_by('timestamp') \
                       .values_list('timestamp', 'measurement')
-    data = [(time.mktime(t.timetuple()), m) for (t, m) in data]    
+    data = [(calendar.timegm(t.timetuple()), m) for (t, m) in data]    
     return http.HttpResponse(
         simplejson.dumps(data, indent = 2 if settings.DEBUG else None),
         content_type = "application/json",
