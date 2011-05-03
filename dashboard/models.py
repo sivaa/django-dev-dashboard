@@ -10,9 +10,11 @@ from django.db import models, connections
 
 METRIC_PERIOD_INSTANT = 'instant'
 METRIC_PERIOD_DAILY = 'daily'
+METRIC_PERIOD_WEEKLY = 'weekly'
 METRIC_PERIOD_CHOICES = (
     (METRIC_PERIOD_INSTANT, 'Instant'),
     (METRIC_PERIOD_DAILY, 'Daily'),
+    (METRIC_PERIOD_WEEKLY, 'Weekly'),
 )
 
 class Metric(models.Model):
@@ -44,7 +46,9 @@ class Metric(models.Model):
         if self.period == METRIC_PERIOD_INSTANT:
             return self._gather_data_instant(since)
         elif self.period == METRIC_PERIOD_DAILY:
-            return self._gather_data_daily(since)
+            return self._gather_data_periodic(since, 'day')
+        elif self.period == METRIC_PERIOD_WEEKLY:
+            return self._gather_data_periodic(since, 'week')
         else:
             raise ValueError("Unknown period: %s", self.period)
     
@@ -60,27 +64,29 @@ class Metric(models.Model):
                         .values_list('timestamp', 'measurement')
         return [(calendar.timegm(t.timetuple()), m) for (t, m) in data]
 
-    def _gather_data_daily(self, since):
+    def _gather_data_periodic(self, since, period):
         """
-        Gather data from "daily" merics.
+        Gather data from "periodic" merics.
         
-        Daily metrics are reset every day and count up as the day goes on.
-        Think "commits today" or "new tickets today". 
+        Period metrics are reset every day/week/month and count up as the period
+        goes on. Think "commits today" or "new tickets this week".
         
         XXX I'm not completely sure how to deal with this since time zones wreak
         havoc, so there's right now a hard-coded offset which doesn't really
         scale but works for now.
         """
-        OFFSET = "2 hours"
+        OFFSET = "2 hours" # HACK!
         ctid = ContentType.objects.get_for_model(self).id
         
         c = connections['default'].cursor()
         c.execute('''SELECT 
-                        DATE_TRUNC('day', timestamp - INTERVAL %s),
+                        DATE_TRUNC(%s, timestamp - INTERVAL %s),
                         MAX(measurement)
                      FROM dashboard_datum
-                     WHERE content_type_id = %s AND object_id = %s
-                     GROUP BY 1;''', [OFFSET, ctid, self.id])
+                     WHERE content_type_id = %s 
+                       AND object_id = %s
+                       AND timestamp >= %s
+                     GROUP BY 1;''', [period, OFFSET, ctid, self.id, since])
         return [(calendar.timegm(t.timetuple()), float(m)) for (t, m) in c.fetchall()]
 
 class TracTicketMetric(Metric):
