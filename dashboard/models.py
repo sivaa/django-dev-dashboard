@@ -65,17 +65,22 @@ class Metric(models.Model):
         Gather data from "daily" merics.
         
         Daily metrics are reset every day and count up as the day goes on.
-        Think "commits today" or "new tickets today". I'm not completely
-        sure how to deal with this since time zones wreak havoc, so I'm
-        just taking an average measurement of each day. It gets close enough.
+        Think "commits today" or "new tickets today". 
+        
+        XXX I'm not completely sure how to deal with this since time zones wreak
+        havoc, so there's right now a hard-coded offset which doesn't really
+        scale but works for now.
         """
+        OFFSET = "2 hours"
         ctid = ContentType.objects.get_for_model(self).id
         
         c = connections['default'].cursor()
-        c.execute('''SELECT DATE_TRUNC('day', timestamp), AVG(measurement)
+        c.execute('''SELECT 
+                        DATE_TRUNC('day', timestamp - INTERVAL %s),
+                        MAX(measurement)
                      FROM dashboard_datum
                      WHERE content_type_id = %s AND object_id = %s
-                     GROUP BY 1;''', [ctid, self.id])
+                     GROUP BY 1;''', [OFFSET, ctid, self.id])
         return [(calendar.timegm(t.timetuple()), float(m)) for (t, m) in c.fetchall()]
 
 class TracTicketMetric(Metric):
