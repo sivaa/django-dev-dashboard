@@ -6,7 +6,7 @@ import calendar
 from django.conf import settings
 from django.contrib.contenttypes.generic import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.db import models
+from django.db import models, connections
 
 METRIC_PERIOD_INSTANT = 'instant'
 METRIC_PERIOD_DAILY = 'daily'
@@ -41,11 +41,42 @@ class Metric(models.Model):
         Returns a list of (timestamp, value) tuples. The timestamp is a Unix
         timestamp, coverted from localtime to UTC.
         """
+        if self.period == METRIC_PERIOD_INSTANT:
+            return self._gather_data_instant(since)
+        elif self.period == METRIC_PERIOD_DAILY:
+            return self._gather_data_daily(since)
+        else:
+            raise ValueError("Unknown period: %s", self.period)
+    
+    def _gather_data_instant(self, since):
+        """
+        Gather data from an "instant" metric.
         
+        Instant metrics change every time we measure them, so they're easy:
+        just return every single measurement.
+        """
         data = self.data.filter(timestamp__gt=since) \
                         .order_by('timestamp') \
                         .values_list('timestamp', 'measurement')
         return [(calendar.timegm(t.timetuple()), m) for (t, m) in data]
+
+    def _gather_data_daily(self, since):
+        """
+        Gather data from "daily" merics.
+        
+        Daily metrics are reset every day and count up as the day goes on.
+        Think "commits today" or "new tickets today". I'm not completely
+        sure how to deal with this since time zones wreak havoc, so I'm
+        just taking an average measurement of each day. It gets close enough.
+        """
+        ctid = ContentType.objects.get_for_model(self).id
+        
+        c = connections['default'].cursor()
+        c.execute('''SELECT DATE_TRUNC('day', timestamp), AVG(measurement)
+                     FROM dashboard_datum
+                     WHERE content_type_id = %s AND object_id = %s
+                     GROUP BY 1;''', [ctid, self.id])
+        return [(calendar.timegm(t.timetuple()), float(m)) for (t, m) in c.fetchall()]
 
 class TracTicketMetric(Metric):
     query = models.TextField()

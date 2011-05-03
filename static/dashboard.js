@@ -18,12 +18,24 @@ $(function () {
                 grid: {borderWidth: 0, hoverable: true},
                 colors: ["yellow"]
             };
+            if (response.period != 'instant') {
+                options.bars = {
+                    show: true,
+                    barWidth: 24 * 60 * 60 * 1000,
+                    fillColor: "yellow",
+                    lineWidth: 1,
+                    align: "center",
+                };
+                options.lines = {show: false};
+            }
             $.plot(e, [response.data], options);
+            
+            var dateformat = response.period == 'instant' ? "%b %d, %h:%M%p" : "%b %d";
             e.bind('plothover', function(event, pos, item) {
                 if (item) {
-                    value_element.html(item.datapoint[1]);
+                    value_element.html(Math.round(item.datapoint[1]));
                     var d = new Date(item.datapoint[0]);
-                    timestamp_element.html($.plot.formatDate(d, "%b %d, %h:%M%p"));
+                    timestamp_element.html($.plot.formatDate(d, dateformat));
                 } else {
                     value_element.html(original_value);
                     timestamp_element.html('&nbsp;');
