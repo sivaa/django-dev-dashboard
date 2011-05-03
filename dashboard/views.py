@@ -7,6 +7,7 @@ from django.conf import settings
 from django.shortcuts import render
 from django.views.decorators.cache import cache_page
 from django.utils import simplejson
+from django.forms.models import model_to_dict
 from .models import Metric
 
 @cache_page(60 * 10)
@@ -39,12 +40,11 @@ def metric_json(request, metric_slug):
         daysback = 30    
     d = datetime.datetime.now() - datetime.timedelta(days=daysback)
     
-    data = metric.data.filter(timestamp__gt=d) \
-                      .order_by('timestamp') \
-                      .values_list('timestamp', 'measurement')
-    data = [(calendar.timegm(t.timetuple()), m) for (t, m) in data]    
+    doc = model_to_dict(metric)
+    doc['data'] = metric.gather_data(since=d)
+
     return http.HttpResponse(
-        simplejson.dumps(data, indent = 2 if settings.DEBUG else None),
+        simplejson.dumps(doc, indent = 2 if settings.DEBUG else None),
         content_type = "application/json",
     )
 

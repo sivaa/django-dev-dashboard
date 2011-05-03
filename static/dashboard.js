@@ -6,11 +6,11 @@ $(function () {
         var original_value = value_element.html();
         
         var url = "/metric/" + e.data('metric') + ".json";
-        $.getJSON(url, function(data) {
+        $.getJSON(url, function(response) {
             // flot time series data needs to be in *milliseconds*, not seconds.
             // fixing this in Python would be easier but would limit reuse.
-            for (var i=0; i < data.length; i++) {
-                data[i][0] = data[i][0] * 1000;
+            for (var i=0; i < response.data.length; i++) {
+                response.data[i][0] = response.data[i][0] * 1000;
             };
             var options = {
                 xaxis: {show: false, mode: "time"},
@@ -18,7 +18,7 @@ $(function () {
                 grid: {borderWidth: 0, hoverable: true},
                 colors: ["yellow"]
             };
-            $.plot(e, [data], options);
+            $.plot(e, [response.data], options);
             e.bind('plothover', function(event, pos, item) {
                 if (item) {
                     value_element.html(item.datapoint[1]);

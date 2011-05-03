@@ -2,6 +2,7 @@ import datetime
 import urllib
 import xmlrpclib
 import feedparser
+import calendar
 from django.conf import settings
 from django.contrib.contenttypes.generic import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -32,6 +33,19 @@ class Metric(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ("metric-detail", [self.pk])
+        
+    def gather_data(self, since):
+        """
+        Gather all the data from this metric since a given date.
+        
+        Returns a list of (timestamp, value) tuples. The timestamp is a Unix
+        timestamp, coverted from localtime to UTC.
+        """
+        
+        data = self.data.filter(timestamp__gt=since) \
+                        .order_by('timestamp') \
+                        .values_list('timestamp', 'measurement')
+        return [(calendar.timegm(t.timetuple()), m) for (t, m) in data]
 
 class TracTicketMetric(Metric):
     query = models.TextField()
