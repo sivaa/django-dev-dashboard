@@ -25,8 +25,8 @@ class Metric(models.Model):
     show_sparkline = models.BooleanField(default=True)
     period = models.CharField(max_length=15, choices=METRIC_PERIOD_CHOICES, 
                               default=METRIC_PERIOD_INSTANT)
-    unit = models.CharField(max_length=100, blank=True, default="")
-    unit_plural = models.CharField(max_length=100, blank=True, default="")
+    unit = models.CharField(max_length=100)
+    unit_plural = models.CharField(max_length=100)
 
     class Meta:
         abstract = True
@@ -128,23 +128,3 @@ class Datum(models.Model):
         
     def __unicode__(self):
         return "%s at %s: %s" % (self.metric, self.timestamp, self.measurement)
-    
-    def unit(self):
-        """
-        Return the unit of measure for this data point, correctly pluralized.
-        """
-        # Work out the singular form, somewhat smartly I hope.
-        if self.metric.unit:
-            singular = self.metric.unit
-        else:
-            singular = self.metric._meta.verbose_name.replace('metric', '').strip()
-        
-        # Yes, this isn't localized at all. Sorry.
-        if self.measurement == 1:
-            return singular
-        
-        # Work out a pluralized form, not quite as smartly this time.
-        if self.metric.unit_plural:
-            return self.metric.unit_plural
-        else:
-            return singular + 's'
