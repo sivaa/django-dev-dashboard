@@ -18,7 +18,7 @@ $(function () {
                 grid: {borderWidth: 0, hoverable: true},
                 colors: ["yellow"]
             };
-            if (response.period != 'instant') {
+            if (response.period == 'daily') {
                 options.bars = {
                     show: true,
                     barWidth: 24 * 60 * 60 * 1000,
@@ -26,7 +26,14 @@ $(function () {
                     lineWidth: 1,
                     align: "center",
                 };
-                options.lines = {show: false};
+            } else if (response.period == 'weekly') {
+                options.bars = {
+                    show: true,
+                    barWidth: 24 * 60 * 60 * 7 * 1000,
+                    fillColor: "yellow",
+                    lineWidth: 1,
+                    align: "center",
+                };
             }
             $.plot(e, [response.data], options);
             

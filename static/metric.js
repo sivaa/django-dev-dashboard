@@ -27,13 +27,18 @@ $(function () {
             grid: {borderWidth: 0, hoverable: true, color: "white"},
             colors: ["yellow"],
         };
-        if (response.period != "instant") {
+        if (response.period == "daily") {
             options.bars = {
                 show: true,
                 barWidth: 22 * 60 * 60 * 1000,
                 align: "center",
             };
-            options.lines = {show: false};
+        } else if (response.period == 'weekly') {
+            options.bars = {
+                show: true,
+                barWidth: 22 * 60 * 60 * 7 * 1000,
+                align: "center"
+            };
         }
         var plot = $.plot(e, [response.data], options);
         
