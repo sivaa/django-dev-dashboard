@@ -37,12 +37,11 @@ $(function () {
             }
             $.plot(e, [response.data], options);
             
-            var dateformat = response.period == 'instant' ? "%b %d, %h:%M%p" : "%b %d";
             e.bind('plothover', function(event, pos, item) {
                 if (item) {
                     value_element.html(item.datapoint[1]);
-                    var d = new Date(item.datapoint[0]);
-                    timestamp_element.html($.plot.formatDate(d, dateformat));
+                    var d = dddash.format_timestamp(item.datapoint[0], response.period);
+                    timestamp_element.html(d);
                 } else {
                     value_element.html(original_value);
                     timestamp_element.html('&nbsp;');

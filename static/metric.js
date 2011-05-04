@@ -43,10 +43,8 @@ $(function () {
         var plot = $.plot(e, [response.data], options);
         
         var format_message = function(timestamp, measurement) {
-            var d = new Date(timestamp);
-            var dateformat = response.period == 'instant' ? "%b %d, %h:%M%p" : "%b %d";
             var unit = measurement == 1 ? response.unit : response.unit_plural;
-            return $.plot.formatDate(d, dateformat) + '<br>' + measurement + ' ' + unit; 
+            return dddash.format_timestamp(timestamp, response.period) + '<br>' + measurement + ' ' + unit; 
         }
         
         var previousPoint = null;
