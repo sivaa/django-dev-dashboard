@@ -1,6 +1,18 @@
 $(function () {
     var e = $("#graph");
     var url = "/metric/" + e.data('metric') + ".json?days=365";
+    var hover = {
+        show: function(x, y, message) {
+            $('<div id="hover">').html(message)
+                .css({top: y, left: x})
+                .appendTo('body')
+                .show();
+        },
+        hide: function() {
+            $("#hover").remove();
+        }
+    };
+    
     $.getJSON(url, function(response) {
         for (var i=0; i < response.data.length; i++) {
             response.data[i][0] = response.data[i][0] * 1000;
@@ -23,35 +35,36 @@ $(function () {
             };
             options.lines = {show: false};
         }
-        $.plot(e, [response.data], options);
-    });
-
-    hover = {
-        show: function(x, y, message, is_bars) {
-            $('<div id="hover">').html(message)
-                .css({top: y+15, left: x+5})
-                .appendTo('body')
-                .show();
-        },
-        hide: function() {
-            $("#hover").remove();
+        var plot = $.plot(e, [response.data], options);
+        
+        var format_message = function(timestamp, measurement) {
+            var d = new Date(timestamp);
+            var dateformat = response.period == 'instant' ? "%b %d, %h:%M%p" : "%b %d";
+            var unit = measurement == 1 ? response.unit : response.unit_plural;
+            return $.plot.formatDate(d, dateformat) + '<br>' + measurement + ' ' + unit; 
         }
-    };
-    
-    var previousPoint = null;
-    e.bind("plothover", function(event, pos, item) {
-        if (item) {
-            if (previousPoint != item.dataIndex) {
-                previousPoint = item.dataIndex;
+        
+        var previousPoint = null;
+        e.bind("plothover", function(event, pos, item) {
+            if (item) {
+                if (previousPoint != item.dataIndex) {
+                    previousPoint = item.dataIndex;
+                    hover.hide();
+                    var message = format_message.apply(null, item.datapoint);
+                    if (response.period == 'instant') {
+                        var x = item.pageX + 10, y = item.pageY + 10;
+                    } else {
+                        // I'd like this hover to be centered over the bar. This
+                        // simple math sorta works, but it assumes a *lot* about
+                        // the plot and basically won't scale. Grr.
+                        var x = item.pageX - 40, y = item.pageY - 50;
+                    }
+                    hover.show(x, y, message);
+                }
+            } else {
                 hover.hide();
-                var d = new Date(item.datapoint[0]);
-                var ds = $.plot.formatDate(d, "%b %d, %h:%M%p");
-                var m = ds + "<br>" + Math.round(item.datapoint[1]*100)/100;
-                hover.show(item.pageX, item.pageY, m, item.series.bars.show);
+                previousPoint = null;
             }
-        } else {
-            hover.hide();
-            previousPoint = null;
-        }
+        });
     });
 });
