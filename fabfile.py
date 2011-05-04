@@ -5,5 +5,6 @@ def deploy():
     local('epio upload')
 
 def copydb():
-    local('epio django -- dumpdata --natural dashboard > dddash.json')
-    local('./manage.py loaddata dddash.json')
+    local('epio django -- dumpdata --natural dashboard | gzip '
+          '> dashboard/fixtures/example_data.json.gz')
+    local('./manage.py loaddata dashboard/fixtures/example_data.json.gz')
