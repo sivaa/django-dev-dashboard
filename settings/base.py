@@ -7,8 +7,8 @@ PROJECT_DIR = Path(__file__).absolute().ancestor(2)
 #
 
 _creds = PROJECT_DIR.child('trac-creds.txt').read_file().strip()
-TRAC_RPC_URL = "http://%s@code.djangoproject.com/login/rpc" % _creds
-TRAC_URL = "http://code.djangoproject.com/"
+TRAC_RPC_URL = "https://%s@code.djangoproject.com/login/rpc" % _creds
+TRAC_URL = "https://code.djangoproject.com/"
 
 #
 # Django settings follow...
