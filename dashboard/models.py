@@ -36,7 +36,7 @@ class Metric(models.Model):
         
     @models.permalink
     def get_absolute_url(self):
-        return ("metric-detail", [self.pk])
+        return ("metric-detail", [self.slug])
         
     def gather_data(self, since):
         """
