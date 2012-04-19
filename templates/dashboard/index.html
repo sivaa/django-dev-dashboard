@@ -1,7 +1,8 @@
 {% extends "dashboard/base.html" %}
 
 {% block extrahead %}
-  <script type="text/javascript" src="{{ STATIC_URL }}dashboard.js" charset="utf-8"></script>
+  {% load static from staticfiles %}
+  <script type="text/javascript" src="{% static "dashboard.js" %}"></script>
 {% endblock %}
 
 {% block content %}

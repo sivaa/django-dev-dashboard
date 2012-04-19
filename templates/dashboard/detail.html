@@ -3,7 +3,8 @@
 {% block title %}{{ metric }} - {{ block.super }}{% endblock %}
 {% block pagetitle %}{{ metric }}{% endblock %}
 {% block extrahead %}
-  <script type="text/javascript" src="{{ STATIC_URL }}metric.js" charset="utf-8"></script>
+  {% load static from staticfiles %}
+  <script type="text/javascript" src="{% static "metric.js" %}"></script>
 {% endblock %}
 
 {% block content %}

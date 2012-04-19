@@ -1,13 +1,14 @@
+import os
 from unipath import FSPath as Path
 
-PROJECT_DIR = Path(__file__).absolute().ancestor(2)
+PROJECT_DIR = Path(__file__).absolute().ancestor(3)
 
 #
 # My settings
 #
 
-_creds = PROJECT_DIR.child('trac-creds.txt').read_file().strip()
-TRAC_RPC_URL = "https://%s@code.djangoproject.com/login/rpc" % _creds
+TRAC_CREDS = os.environ['TRAC_CREDS']  # Set to "user:pass" for Trac.
+TRAC_RPC_URL = "https://%s@code.djangoproject.com/login/rpc" % TRAC_CREDS
 TRAC_URL = "https://code.djangoproject.com/"
 
 #

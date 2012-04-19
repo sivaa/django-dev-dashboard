@@ -3,10 +3,11 @@
 <head>
   <meta charset=utf-8 />
   <title>{% block title %}Django Development Dashboard{% endblock %}</title>
-  <link rel="stylesheet" href="{{ STATIC_URL }}dashboard.css" type="text/css" media="screen" title="no title" charset="utf-8">
-  <script type="text/javascript" src="{{ STATIC_URL }}jquery.min.js" charset="utf-8"></script>
-  <script type="text/javascript" src="{{ STATIC_URL }}jquery.flot.min.js" charset="utf-8"></script>
-  <script type="text/javascript" src="{{ STATIC_URL }}dddash.js" charset="utf-8"></script>
+  {% load static from staticfiles %}
+  <link rel="stylesheet" href="{% static "dashboard.css" %}">
+  <script type="text/javascript" src="{% static "jquery.min.js" %}"></script>
+  <script type="text/javascript" src="{% static "jquery.flot.min.js" %}"></script>
+  <script type="text/javascript" src="{% static "dddash.js" %}"></script>
   {% block extrahead %}{% endblock %}
 </head>
 <body>
