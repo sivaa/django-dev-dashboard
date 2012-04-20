@@ -27,6 +27,7 @@ Initial setup::
     heroku addons:add pgbackups
     heroku addons:add redistogo:nano
     heroku addons:add scheduler:standard
+    heroku addons:add sentry
     heroku addons:open scheduler
     # add a job to run `python manage.py update_metrics` hourly
     heroku config:add DJANGO_SETTINGS_MODULE=dashboard.settings.heroku

@@ -8,3 +8,4 @@ redis==2.4.11
 gunicorn==0.14.2
 django-storages==1.1.4
 boto==2.3.0
+raven==1.7.2
