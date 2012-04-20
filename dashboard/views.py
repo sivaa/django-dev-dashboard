@@ -6,8 +6,12 @@ from django.conf import settings
 from django.shortcuts import render
 from django.utils import simplejson
 from django.forms.models import model_to_dict
+from django.views.decorators.cache import cache_page
 from .models import Metric
 
+TEN_MINUTES = 60 * 10
+
+@cache_page(TEN_MINUTES)
 def index(request):
     metrics = []
     for MC in Metric.__subclasses__():
@@ -20,6 +24,7 @@ def index(request):
         data.append({'metric': metric, 'latest': latest})
     return render(request, 'dashboard/index.html', {'data': data})
 
+@cache_page(TEN_MINUTES)
 def metric_detail(request, metric_slug):
     metric = _find_metric(metric_slug)
     return render(request, 'dashboard/detail.html', {
@@ -27,6 +32,7 @@ def metric_detail(request, metric_slug):
         'latest': metric.data.latest(),
     })
 
+@cache_page(TEN_MINUTES)
 def metric_json(request, metric_slug):
     metric = _find_metric(metric_slug)
 

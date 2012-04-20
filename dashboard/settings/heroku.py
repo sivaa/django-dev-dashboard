@@ -46,6 +46,7 @@ CACHES = {
             'DB': 0,
             'PASSWORD': redis_url.password,
         },
+        'VERSION': os.environ.get('CACHE_VERSION', 0),
     },
 }
 
