@@ -2,8 +2,6 @@ import os
 import urlparse
 from .base import *
 
-DEBUG = TEMPLATE_DEBUG = True
-
 # Heroku needs Gunicorn specifically.
 INSTALLED_APPS += ['gunicorn']
 
