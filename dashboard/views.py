@@ -38,7 +38,7 @@ def metric_json(request, metric_slug):
 
     try:
         daysback = int(request.GET['days'])
-    except (TypeError, KeyError):
+    except (TypeError, KeyError, ValueError):
         daysback = 30
     d = datetime.datetime.now() - datetime.timedelta(days=daysback)
 
