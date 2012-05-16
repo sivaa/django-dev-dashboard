@@ -22,6 +22,10 @@ SESSION_COOKIE_HTTPONLY = True
 # The header Heroku uses to indicate SSL:
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
+# Canoncalize on "dashboard.djangoproject.com"
+MIDDLEWARE_CLASSES.insert(0, 'dashboard.middleware.CanonicalDomainMiddleware')
+CANONICAL_HOSTNAME = 'dashboard.djangoproject.com'
+
 #
 # Store files on S3, pulling config from os.environ.
 #
