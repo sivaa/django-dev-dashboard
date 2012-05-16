@@ -5,7 +5,26 @@ from .base import *
 # Heroku needs Gunicorn specifically.
 INSTALLED_APPS += ['gunicorn']
 
+#
+# Now lock this sucker down.
+#
+INSTALLED_APPS += ['djangosecure']
+MIDDLEWARE_CLASSES.insert(0, 'djangosecure.middleware.SecurityMiddleware')
+SECURE_SSL_REDIRECT = True
+SECURE_HSTS_SECONDS = 600
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_FRAME_DENY = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+
+# The header Heroku uses to indicate SSL:
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+#
 # Store files on S3, pulling config from os.environ.
+#
 DEFAULT_FILE_STORAGE = STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
