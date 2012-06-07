@@ -2,6 +2,7 @@ import datetime
 import xmlrpclib
 import feedparser
 import calendar
+import requests
 from django.conf import settings
 from django.contrib.contenttypes.generic import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -110,6 +111,32 @@ class RSSFeedMetric(Metric):
     def fetch(self):
         return len(feedparser.parse(self.feed_url).entries)
     
+    def link(self):
+        return self.link_url
+
+class GithubItemCountMetric(Metric):
+    """Example: https://api.github.com/repos/django/django/pulls?state=open"""
+    api_url = models.URLField(max_length=1000)
+    link_url = models.URLField(max_length=1000)
+
+    def fetch(self):
+        """
+        Request the specified GitHub API URL with 100 items per page. Loop over
+        the pages until no page left. Return total item count.
+        """
+        count = 0
+        page = 1
+        while True:
+            r = requests.get(self.api_url, params={
+                'page': page, 'per_page': 100
+            })
+            c = len(r.json)
+            count += c
+            page += 1
+            if c < 100:
+                break
+        return count
+        
     def link(self):
         return self.link_url
 
