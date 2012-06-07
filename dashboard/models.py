@@ -1,5 +1,4 @@
 import datetime
-import urllib
 import xmlrpclib
 import feedparser
 import calendar
