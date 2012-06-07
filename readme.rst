@@ -15,6 +15,7 @@ To run locally::
     export TRAC_CREDS=<user:pass> # Your djangoproject.com creds.
     ./manage.py syncdb --migrate
     ./manage.py loaddata example_data
+    ./manage.py update_metrics
 
 To deploy onto Heroku (mostly for my future reference):
 
