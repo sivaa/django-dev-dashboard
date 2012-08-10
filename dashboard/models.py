@@ -1,3 +1,4 @@
+import ast
 import datetime
 import xmlrpclib
 import feedparser
@@ -139,6 +140,32 @@ class GithubItemCountMetric(Metric):
         
     def link(self):
         return self.link_url
+
+class JenkinsMetric(Metric):
+    jenkins_instance_root_url = models.URLField(max_length=1000)
+    build = models.CharField(max_length=100)
+
+    def urljoin(self, *parts):
+        return '/'.join(p.strip('/') for p in parts)
+
+    def fetch(self):
+        api_url = self.urljoin(self.link(), 'api/python')
+        job_desc = requests.get(api_url)
+        job_dict = ast.literal_eval(job_desc.text)
+        build_ptr_dict = job_dict['lastCompletedBuild']
+        build_url = self.urljoin(build_ptr_dict['url'], 'api/python')
+        build_desc = requests.get(build_url)
+        build_dict = ast.literal_eval(build_desc.text)
+        fail_count = build_dict['actions'][4]['failCount']
+        total_count = build_dict['actions'][4]['totalCount']
+        if not total_count:
+            return 0
+        if fail_count == total_count:
+            return 100
+        return int((100.0 * fail_count)/total_count)
+
+    def link(self):
+        return self.urljoin(self.jenkins_instance_root_url, 'job', self.build)
 
 class Datum(models.Model):
     metric = GenericForeignKey()
