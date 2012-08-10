@@ -160,9 +160,7 @@ class JenkinsMetric(Metric):
         total_count = build_dict['actions'][4]['totalCount']
         if not total_count:
             return 0
-        if fail_count == total_count:
-            return 100
-        return int((100.0 * fail_count)/total_count)
+        return (fail_count * 100)/total_count
 
     def link(self):
         return self.urljoin(self.jenkins_instance_root_url, 'job', self.build)
