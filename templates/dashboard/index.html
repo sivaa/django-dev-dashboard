@@ -10,7 +10,7 @@
     <div class="metric{% if report.metric.show_sparkline %} has-sparkline{% endif %}">
       <h2><a href="{{ report.metric.link }}">{{ report.metric.name }}</a></h2>
       <p class="value" >
-        <a href="{{ report.metric.link }}">{{ report.latest.measurement }}</a>
+        <a href="{{ report.metric.link }}">{{ report.latest.measurement }}{% if report.metric.unit == "%" %}%{% endif %}</a>
         <span class="timestamp">&nbsp;</span>
       </p>
       {% if report.metric.show_sparkline %}
