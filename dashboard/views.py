@@ -16,7 +16,7 @@ def index(request):
     metrics = []
     for MC in Metric.__subclasses__():
         metrics.extend(MC.objects.filter(show_on_dashboard=True))
-    metrics = sorted(metrics, key=operator.attrgetter('name'))
+    metrics = sorted(metrics, key=operator.attrgetter('display_position'))
 
     data = []
     for metric in metrics:

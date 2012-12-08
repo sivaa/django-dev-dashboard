@@ -18,9 +18,22 @@ METRIC_PERIOD_CHOICES = (
     (METRIC_PERIOD_WEEKLY, 'Weekly'),
 )
 
+class Category(models.Model):
+    name = models.CharField(max_length=300)
+    position = models.PositiveSmallIntegerField(default=1)
+
+    class Meta:
+        verbose_name_plural = 'categories'
+
+    def __unicode__(self):
+        return self.name
+
 class Metric(models.Model):
     name = models.CharField(max_length=300)
     slug = models.SlugField()
+    category = models.ForeignKey(Category, blank=True, null=True,
+                                 on_delete=models.SET_NULL)
+    position = models.PositiveSmallIntegerField(default=1)
     data = GenericRelation('Datum')
     show_on_dashboard = models.BooleanField(default=True)
     show_sparkline = models.BooleanField(default=True)
@@ -38,6 +51,11 @@ class Metric(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ("metric-detail", [self.slug])
+
+    @property
+    def display_position(self):
+        cat_position = -1 if self.category is None else self.category.position
+        return cat_position, self.position
 
     def gather_data(self, since):
         """
