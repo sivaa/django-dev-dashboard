@@ -5,6 +5,8 @@ from .base import *
 # Heroku needs Gunicorn specifically.
 INSTALLED_APPS += ['gunicorn']
 
+SECRET_KEY = os.environ['SECRET_KEY']
+
 #
 # Now lock this sucker down.
 #
