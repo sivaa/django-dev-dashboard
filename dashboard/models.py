@@ -121,7 +121,7 @@ class TracTicketMetric(Metric):
         return len(s.ticket.query(self.query + "&max=0"))
 
     def link(self):
-        return "%squery?%s" % (settings.TRAC_URL, self.query)
+        return "%squery?%s&desc=1&order=changetime" % (settings.TRAC_URL, self.query)
 
 class RSSFeedMetric(Metric):
     feed_url = models.URLField(max_length=1000)
