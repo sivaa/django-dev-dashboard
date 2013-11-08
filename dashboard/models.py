@@ -159,6 +159,40 @@ class GithubItemCountMetric(Metric):
     def link(self):
         return self.link_url
 
+class GithubCountMetric(Metric):
+    """Example: https://api.github.com/repos/django/django/pulls?state=open"""
+    api_url = models.URLField(max_length=1000)
+    link_url = models.URLField(max_length=1000)
+
+    def fetch(self):
+        count = 0
+        page = 1
+        days_from = 0 # DAILY DEFAULT
+        if self.period == METRIC_PERIOD_WEEKLY:
+            days_from = 7
+        since = datetime.date.today() - datetime.timedelta(days = days_from)
+        
+        while True:
+            params={'page': page, 'per_page': 100}
+            if not self.period == METRIC_PERIOD_INSTANT: 
+                params['since'] = str(since)
+            
+            r = requests.get(self.api_url, params=params)
+            print(r.headers)
+            for res in r.json:
+                record_date = datetime.datetime.strptime(res['created_at'][:10], '%Y-%m-%d').date()
+                if not self.period == METRIC_PERIOD_INSTANT:
+                    if not record_date >= since:
+                        return str(count)
+                count += 1
+            page += 1
+            if len(r.json) < 100:
+                break
+        return count
+
+    def link(self):
+        return self.link_url
+
 class JenkinsFailuresMetric(Metric):
     """
     Track failures of a job/build. Uses the Python flavor of the Jenkins REST
